@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:Memory"
              x:Class="Memory.MainPage">
     <ContentPage.Content>
-        <Grid x:Name="MainGrid" BackgroundColor="#3498DB">
+        <Grid x:Name="MainGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>

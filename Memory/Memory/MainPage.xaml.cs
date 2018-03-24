@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,7 +13,8 @@ namespace Memory
 {
     public partial class MainPage : ContentPage, INotifyPropertyChanged
     {
-        string defaultImageSrc = "icon.png";
+        int defaultDelay = 1000;
+        string defaultImageSrc = "def.png";
         List<MemoryImage> Images = new List<MemoryImage>();
         string[] sourceStrings = new string[]
         {
@@ -27,54 +29,19 @@ namespace Memory
         };
         MemoryImage previouslySelected;
         private bool waitingToHidePictures;
+
         public MainPage()
         {
             InitializeComponent();
+            ResetGame();
+        }
 
-            var imageSourceStrings = GetSourceStack();
+        public void ResetGame()
+        {
+            var imageSourceStrings = GetSourceStringQueue();
             InitImages(imageSourceStrings);
         }
-
-        private async void ImageTap(object sender, EventArgs context)
-        {
-            if (!waitingToHidePictures)
-            {
-                var img = (sender as Image);
-                var selected = Images.First(x => x?.Image == img);
-                img.Source = selected.Source;
-                if (!selected.IsLocked)
-                {
-                    if (previouslySelected == null)
-                    {
-                        previouslySelected = selected;
-                    }
-                    else
-                    {
-                        if (selected.Image == previouslySelected.Image)
-                        {
-                            selected.Image.Source = defaultImageSrc;
-                        }
-                        else if (selected.Source == previouslySelected.Source)
-                        {
-                            selected.IsLocked = true;
-                            previouslySelected.IsLocked = true;
-                        }
-                        else
-                        {
-                            waitingToHidePictures = true;
-                            await Task.Delay(2000);
-                            previouslySelected.Image.Source = defaultImageSrc;
-                            selected.Image.Source = defaultImageSrc;
-                            waitingToHidePictures = false;
-                        }
-                        previouslySelected = null;
-                    }
-                }
-            }
-        }
-
-
-        private Queue<string> GetSourceStack()
+        private Queue<string> GetSourceStringQueue()
         {
             var tmp = new Queue<string>();
             foreach (var item in sourceStrings)
@@ -94,25 +61,69 @@ namespace Memory
                 src.Enqueue(source);
             }
         }
-        private void InitImage(Image img, string src, TapGestureRecognizer tapRecognizer)
-        {
-            Images.Add(new MemoryImage(src, img));
-
-            img.GestureRecognizers.Add(tapRecognizer);
-            img.Source = defaultImageSrc;
-        }
         private List<Image> GetRandomizedImageList()
         {
-            var img = MainGrid.Children.Where(x => x is Image).Select(x => x as Image).ToList();
-            img.Shuffle();
-            return img;
+            var imageList = MainGrid.Children.Where(x => x is Image).Select(x => x as Image).ToList();
+            imageList.Shuffle();
+            return imageList;
         }
         private TapGestureRecognizer GetNewTapRecognizer()
         {
             var tmp = new TapGestureRecognizer();
             tmp.Tapped += ImageTap;
             return tmp;
+        }
+        private void InitImage(Image img, string src, TapGestureRecognizer tapRecognizer)
+        {
+            Images.Add(new MemoryImage(src, img));
+            img.GestureRecognizers.Add(tapRecognizer);
+            img.Source = defaultImageSrc;
+        }
 
+        private async void ImageTap(object sender, EventArgs context)
+        {
+            if (!waitingToHidePictures)
+            {
+                var selected = GetAssociatedObject(sender);
+
+                selected.Uncover();
+
+                if (previouslySelected == null)
+                {
+                    previouslySelected = selected;
+                }
+                else
+                {
+                    if (selected.IsTheSameAs(previouslySelected))
+                    {
+                        selected.Disable();
+                        previouslySelected.Disable();
+                    }
+                    else
+                    {
+                        await HideWithDelay(selected, previouslySelected);
+                    }
+                    previouslySelected = null;
+                }
+
+                selected.Enable();
+            }
+        }
+        private async Task HideWithDelay(MemoryImage first, MemoryImage second)
+        {
+            waitingToHidePictures = true;
+
+            await Task.Delay(defaultDelay);
+
+            first.Cover(defaultImageSrc);
+            second.Cover(defaultImageSrc);
+
+            waitingToHidePictures = false;
+        }
+        private MemoryImage GetAssociatedObject(object sender)
+        {
+            var img = (sender as Image);
+            return Images.First(x => x?.Image == img);
         }
     }
     public static class Extensions

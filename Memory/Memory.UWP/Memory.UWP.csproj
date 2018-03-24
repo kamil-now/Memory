@@ -104,7 +104,15 @@
     <None Include="Memory.UWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\csharp.png" />
+    <Content Include="cplusplus.png" />
+    <Content Include="def.png" />
+    <Content Include="icon.png" />
+    <Content Include="java.png" />
+    <Content Include="kotlin.png" />
+    <Content Include="python.png" />
+    <Content Include="ruby.png" />
+    <Content Include="rust.png" />
+    <Content Include="swift.png" />
     <Content Include="csharp.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-100.png" />
