@@ -4,18 +4,18 @@
              xmlns:local="clr-namespace:Memory"
              x:Class="Memory.MainPage">
     <ContentPage.Content>
-        <Grid x:Name="MainGrid">
+        <Grid x:Name="MainGrid" BackgroundColor="#3498DB">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
             <Image Grid.Row="0" Grid.Column="0" />
             <Image Grid.Row="0" Grid.Column="1" />

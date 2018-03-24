@@ -8,11 +8,12 @@ namespace Memory
     public class MemoryImage
     {
         public string Source { get; }
-        public bool IsVisible { get; set; }
         public Image Image { get; set; }
-        public MemoryImage(string src)
+        public bool IsLocked { get; set; }
+        public MemoryImage(string src, Image referencedImage)
         {
             Source = src;
+            Image = referencedImage;
         }
     }
 }

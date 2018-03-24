@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -12,45 +13,100 @@ namespace Memory
     public partial class MainPage : ContentPage, INotifyPropertyChanged
     {
         string defaultImageSrc = "icon.png";
-        string csharp = "csharp.png";
         List<MemoryImage> Images = new List<MemoryImage>();
-        //{
-        //    { new MemoryImage("csharp.png") },
-        //    { new MemoryImage("") },
-        //    { new MemoryImage("") },
-        //    { new MemoryImage("") },
-        //    { new MemoryImage("") },
-        //    { new MemoryImage("") },
-        //    { new MemoryImage("") },
-        //    { new MemoryImage("") },
-        //};
-        List<Image> images = new List<Image>();
-
+        string[] sourceStrings = new string[]
+        {
+            "csharp.png",
+            "cplusplus.png",
+            "swift.png",
+            "java.png",
+            "kotlin.png",
+            "python.png",
+            "ruby.png",
+            "rust.png",
+        };
+        MemoryImage previouslySelected;
+        private bool waitingToHidePictures;
         public MainPage()
         {
             InitializeComponent();
-            InitImages();
+
+            var imageSourceStrings = GetSourceStack();
+            InitImages(imageSourceStrings);
         }
-        private void ImageTap(object sender, EventArgs context)
+
+        private async void ImageTap(object sender, EventArgs context)
         {
-            var img = (sender as Image);
-            var tmp = Images.FirstOrDefault(x => x?.Image == img);
-            img.Source = tmp?.Source ?? defaultImageSrc;
-        }
-        private void InitImages()
-        {
-            images = MainGrid.Children.Where(x => x is Image).Select(x => x as Image).ToList();
-            images.Shuffle();
-            var tapRecognizer = GetNewTapRecognizer();
-            foreach (var item in images)
+            if (!waitingToHidePictures)
             {
-                if (Images.Count == 0)
-                    Images.Add(new MemoryImage(csharp) { Image = item });
-                item.GestureRecognizers.Add(tapRecognizer);
-                item.Source = defaultImageSrc;
+                var img = (sender as Image);
+                var selected = Images.First(x => x?.Image == img);
+                img.Source = selected.Source;
+                if (!selected.IsLocked)
+                {
+                    if (previouslySelected == null)
+                    {
+                        previouslySelected = selected;
+                    }
+                    else
+                    {
+                        if (selected.Image == previouslySelected.Image)
+                        {
+                            selected.Image.Source = defaultImageSrc;
+                        }
+                        else if (selected.Source == previouslySelected.Source)
+                        {
+                            selected.IsLocked = true;
+                            previouslySelected.IsLocked = true;
+                        }
+                        else
+                        {
+                            waitingToHidePictures = true;
+                            await Task.Delay(2000);
+                            previouslySelected.Image.Source = defaultImageSrc;
+                            selected.Image.Source = defaultImageSrc;
+                            waitingToHidePictures = false;
+                        }
+                        previouslySelected = null;
+                    }
+                }
             }
         }
 
+
+        private Queue<string> GetSourceStack()
+        {
+            var tmp = new Queue<string>();
+            foreach (var item in sourceStrings)
+            {
+                tmp.Enqueue(item);
+            }
+            return tmp;
+        }
+        private void InitImages(Queue<string> src)
+        {
+            var images = GetRandomizedImageList();
+            var tapRecognizer = GetNewTapRecognizer();
+            foreach (var item in images)
+            {
+                string source = src.Dequeue();
+                InitImage(item, source, tapRecognizer);
+                src.Enqueue(source);
+            }
+        }
+        private void InitImage(Image img, string src, TapGestureRecognizer tapRecognizer)
+        {
+            Images.Add(new MemoryImage(src, img));
+
+            img.GestureRecognizers.Add(tapRecognizer);
+            img.Source = defaultImageSrc;
+        }
+        private List<Image> GetRandomizedImageList()
+        {
+            var img = MainGrid.Children.Where(x => x is Image).Select(x => x as Image).ToList();
+            img.Shuffle();
+            return img;
+        }
         private TapGestureRecognizer GetNewTapRecognizer()
         {
             var tmp = new TapGestureRecognizer();
