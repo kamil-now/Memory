@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 using Xamarin.Forms;
 
 namespace Memory
 {
-	public partial class App : Application
+    public partial class App : Application
 	{
 		public App ()
 		{
 			InitializeComponent();
 
-			MainPage = new Memory.MainPage();
+			MainPage = new MainPage();
 		}
 
 		protected override void OnStart ()

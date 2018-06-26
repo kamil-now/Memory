@@ -1,38 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             x:Name="root"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Memory"
              x:Class="Memory.MainPage">
     <ContentPage.Content>
-        <Grid x:Name="MainGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
+        <Grid x:Name="MainGrid"
+              HorizontalOptions="Fill"
+              VerticalOptions="Fill">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="4*" />
             </Grid.RowDefinitions>
-            <Image Grid.Row="0" Grid.Column="0" />
-            <Image Grid.Row="0" Grid.Column="1" />
-            <Image Grid.Row="0" Grid.Column="2" />
-            <Image Grid.Row="0" Grid.Column="3" />
-            <Image Grid.Row="1" Grid.Column="0" />
-            <Image Grid.Row="1" Grid.Column="1" />
-            <Image Grid.Row="1" Grid.Column="2" />
-            <Image Grid.Row="1" Grid.Column="3" />
-            <Image Grid.Row="2" Grid.Column="0" />
-            <Image Grid.Row="2" Grid.Column="1" />
-            <Image Grid.Row="2" Grid.Column="2" />
-            <Image Grid.Row="2" Grid.Column="3" />
-            <Image Grid.Row="3" Grid.Column="0" />
-            <Image Grid.Row="3" Grid.Column="1" />
-            <Image Grid.Row="3" Grid.Column="2" />
-            <Image Grid.Row="3" Grid.Column="3" />
+
+            <Label Text="{Binding TimeLeft,StringFormat='time left: {0} s'}"
+                   HorizontalOptions="Center"
+                   Grid.ColumnSpan="4"
+                FontAttributes="Bold" />
+
+                <Image Grid.Row="1"
+                       Grid.Column="0" />
+                <Image Grid.Row="1"
+                       Grid.Column="1" />
+                <Image Grid.Row="1"
+                       Grid.Column="2" />
+                <Image Grid.Row="1"
+                       Grid.Column="3" />
+                <Image Grid.Row="2"
+                       Grid.Column="0" />
+                <Image Grid.Row="2"
+                       Grid.Column="1" />
+                <Image Grid.Row="2"
+                       Grid.Column="2" />
+                <Image Grid.Row="2"
+                       Grid.Column="3" />
+                <Image Grid.Row="3"
+                       Grid.Column="0" />
+                <Image Grid.Row="3"
+                       Grid.Column="1" />
+                <Image Grid.Row="3"
+                       Grid.Column="2" />
+                <Image Grid.Row="3"
+                       Grid.Column="3" />
+                <Image Grid.Row="4"
+                       Grid.Column="0" />
+                <Image Grid.Row="4"
+                       Grid.Column="1" />
+                <Image Grid.Row="4"
+                       Grid.Column="2" />
+                <Image Grid.Row="4"
+                       Grid.Column="3" />
         </Grid>
     </ContentPage.Content>
 </ContentPage>
